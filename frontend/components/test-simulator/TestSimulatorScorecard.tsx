@@ -114,7 +114,7 @@ export const TestSimulatorScorecard: React.FC<TestSimulatorScorecardProps> = ({
       <div className="flex justify-center py-4">
         <button
           onClick={onResetSession}
-          className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600 hover:from-emerald-400 hover:to-teal-400 text-slate-950 font-extrabold text-sm transition-all shadow-xl cursor-pointer"
+          className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-extrabold text-sm transition-all shadow-xl cursor-pointer"
         >
           <RefreshCw className="w-4 h-4 fill-slate-950" />
           <span>Start New Practice Session</span>

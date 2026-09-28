@@ -233,7 +233,7 @@ export const DebriefPhase: React.FC<DebriefPhaseProps> = ({
       <div className="flex justify-center py-4">
         <button
           onClick={onRestart}
-          className="flex items-center gap-3 px-8 py-4 rounded-xl bg-gradient-to-r from-blue-600 via-blue-500 to-emerald-500 hover:from-blue-500 hover:to-emerald-400 text-white font-extrabold text-sm transition-all shadow-lg shadow-blue-500/20 cursor-pointer"
+          className="flex items-center gap-3 px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-sm transition-all shadow-lg shadow-blue-500/20 cursor-pointer"
         >
           <RefreshCw className="w-4 h-4 fill-white" />
           <span>Start New Live Session</span>

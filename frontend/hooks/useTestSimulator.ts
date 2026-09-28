@@ -190,7 +190,7 @@ export function useTestSimulator() {
     }, 1000);
   };
 
-  const handleStopRecording = () => {
+  const handleStopRecording = (): Promise<Blob | null> => {
     setIsRecording(false);
     if (timerRef.current) {
       clearInterval(timerRef.current);
@@ -201,11 +201,36 @@ export function useTestSimulator() {
         recognitionRef.current.stop();
       } catch (_) { }
     }
-    if (mediaRecorderRef.current && mediaRecorderRef.current.state !== 'inactive') {
-      try {
-        mediaRecorderRef.current.stop();
-      } catch (_) { }
-    }
+
+    return new Promise((resolve) => {
+      const recorder = mediaRecorderRef.current;
+      if (recorder && recorder.state !== 'inactive') {
+        recorder.onstop = () => {
+          const mimeType = recorder.mimeType || 'audio/webm';
+          const blob = new Blob(audioChunksRef.current, { type: mimeType });
+          setAudioBlob(blob);
+          if (recorder.stream) {
+            recorder.stream.getTracks().forEach((track) => track.stop());
+          }
+          resolve(blob);
+        };
+        try {
+          recorder.stop();
+        } catch (e) {
+          console.warn('Error stopping MediaRecorder:', e);
+          const fallbackBlob = audioChunksRef.current.length > 0 ? new Blob(audioChunksRef.current, { type: 'audio/webm' }) : null;
+          resolve(fallbackBlob);
+        }
+      } else {
+        if (audioChunksRef.current.length > 0) {
+          const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+          setAudioBlob(blob);
+          resolve(blob);
+        } else {
+          resolve(audioBlob);
+        }
+      }
+    });
   };
 
   // Step 1: Generate Questions
@@ -248,11 +273,22 @@ export function useTestSimulator() {
     try {
       let candidateTranscript = textAnswer.trim();
 
+      // Ensure recording is stopped and audio blob is resolved before transcription
+      let activeAudioBlob: Blob | null = audioBlob;
+      if (isRecording) {
+        activeAudioBlob = await handleStopRecording();
+      } else if (!activeAudioBlob && audioChunksRef.current.length > 0) {
+        activeAudioBlob = new Blob(audioChunksRef.current, { type: mediaRecorderRef.current?.mimeType || 'audio/webm' });
+        setAudioBlob(activeAudioBlob);
+      }
+
       // --- ENDPOINT 1: AssemblyAI Speech-to-Text ---
-      if (answerMode === 'RECORD' && audioBlob) {
+      if (answerMode === 'RECORD' && activeAudioBlob && activeAudioBlob.size > 0) {
         try {
           const formData = new FormData();
-          formData.append('audio_file', audioBlob, 'answer.webm');
+          const mimeType = activeAudioBlob.type || 'audio/webm';
+          const ext = mimeType.includes('mp4') ? 'mp4' : mimeType.includes('ogg') ? 'ogg' : mimeType.includes('wav') ? 'wav' : 'webm';
+          formData.append('audio_file', activeAudioBlob, `answer.${ext}`);
 
           const sttResp = await fetch(`${baseUrl}/api/v1/speech-to-text`, {
             method: 'POST',
@@ -261,15 +297,16 @@ export function useTestSimulator() {
 
           if (sttResp.ok) {
             const sttData = await sttResp.json();
-            if (sttData.transcript) {
-              candidateTranscript = sttData.transcript;
-              setTranscript(sttData.transcript);
+            if (sttData.transcript && sttData.transcript.trim()) {
+              candidateTranscript = sttData.transcript.trim();
+              setTranscript(candidateTranscript);
             }
           } else {
-            console.warn('Speech-to-Text endpoint returned non-OK status, falling back to local transcript.');
+            const errText = await sttResp.text();
+            console.warn('AssemblyAI Speech-to-Text endpoint returned error:', sttResp.status, errText);
           }
         } catch (sttErr) {
-          console.warn('Speech-to-text conversion error:', sttErr);
+          console.warn('AssemblyAI speech-to-text conversion error:', sttErr);
         }
       }
 

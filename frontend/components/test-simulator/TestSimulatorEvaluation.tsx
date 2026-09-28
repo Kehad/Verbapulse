@@ -182,7 +182,7 @@ export const TestSimulatorEvaluation: React.FC<TestSimulatorEvaluationProps> = (
             type="button"
             onClick={onNextQuestion}
             disabled={loading}
-            className="flex items-center gap-3 px-9 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-indigo-600 hover:from-emerald-400 hover:to-indigo-400 text-slate-950 font-extrabold text-sm transition-all shadow-xl shadow-emerald-500/20 cursor-pointer"
+            className="flex items-center gap-3 px-9 py-4 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-extrabold text-sm transition-all shadow-xl shadow-emerald-500/20 cursor-pointer"
           >
             <span>
               {currentIndex + 1 < totalQuestions

@@ -68,9 +68,6 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-blue-500 selection:text-white relative overflow-hidden">
       {/* Neon Sapphire & Mint Ambient Backdrop */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b40_1px,transparent_1px),linear-gradient(to_bottom,#1e293b40_1px,transparent_1px)] bg-[size:3rem_3rem] [mask-image:radial-gradient(ellipse_70%_60%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-96 bg-gradient-to-b from-blue-600/10 via-emerald-500/5 to-transparent blur-3xl pointer-events-none" />
-
       {/* Top Navbar */}
       <header className="w-full border-b border-slate-800/80 bg-slate-950/80 backdrop-blur-xl sticky top-0 z-50 px-4 sm:px-8 py-3.5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center gap-3">
@@ -78,11 +75,7 @@ export default function Home() {
             onClick={() => setMode('LANDING')}
             className="flex items-center gap-3 group text-left cursor-pointer"
           >
-            <img
-              src="/logo.png"
-              alt="VerbaPulse Logo"
-              className="w-10 h-10 object-contain transition-transform"
-            />
+            <Shield className="w-8 h-8 text-blue-500 shrink-0" />
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 <span className="font-black text-lg tracking-tight text-white group-hover:text-blue-400 transition-colors">

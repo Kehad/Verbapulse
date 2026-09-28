@@ -157,7 +157,7 @@ export const TrafficLightIndicator: React.FC<TrafficLightIndicatorProps> = ({
             <Mic className="w-4 h-4 text-blue-400" />
             <div className="w-24 sm:w-32 h-2.5 bg-slate-950 rounded-full border border-slate-800 overflow-hidden p-0.5">
               <div
-                className="h-full bg-gradient-to-r from-blue-500 via-emerald-400 to-indigo-500 rounded-full transition-all duration-75"
+                className="h-full bg-blue-500 rounded-full transition-all duration-75"
                 style={{ width: `${audioLevel}%` }}
               />
             </div>

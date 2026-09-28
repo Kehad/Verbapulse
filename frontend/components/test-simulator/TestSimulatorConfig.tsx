@@ -38,7 +38,7 @@ export const TestSimulatorConfig: React.FC<TestSimulatorConfigProps> = ({
       {/* Title Header */}
       <div className="flex items-center justify-between border-b border-slate-800 pb-5">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-blue-600 via-blue-500 to-emerald-500 flex items-center justify-center text-white font-extrabold shadow-md shadow-blue-500/20">
+          <div className="w-10 h-10 rounded-2xl bg-blue-600 flex items-center justify-center text-white font-extrabold shadow-md shadow-blue-500/20">
             <Sliders className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -46,10 +46,7 @@ export const TestSimulatorConfig: React.FC<TestSimulatorConfigProps> = ({
             <p className="text-xs text-slate-400 font-medium">Select your target subject, question count, time limit, and adaptive difficulty.</p>
           </div>
         </div>
-        <div className="hidden sm:flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-950 border border-slate-800 text-slate-300 text-xs font-mono font-semibold">
-          <Brain className="w-3.5 h-3.5 text-blue-400" />
-          <span>Gemini AI Engine</span>
-        </div>
+       
       </div>
 
       {/* Preset Domains Selector */}
@@ -180,7 +177,7 @@ export const TestSimulatorConfig: React.FC<TestSimulatorConfigProps> = ({
           type="button"
           onClick={onGenerateQuestions}
           disabled={loading || !domain.trim()}
-          className="w-full relative group overflow-hidden py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-emerald-500 hover:from-blue-500 hover:to-emerald-400 text-white font-black text-sm tracking-wide transition-all shadow-xl shadow-blue-500/20 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-3"
+          className="w-full relative group overflow-hidden py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-black text-sm tracking-wide transition-all shadow-xl shadow-blue-500/20 disabled:opacity-50 cursor-pointer flex items-center justify-center gap-3"
         >
           {loading ? (
             <>

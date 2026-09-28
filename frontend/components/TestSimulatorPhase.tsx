@@ -64,7 +64,7 @@ export const TestSimulatorPhase: React.FC = () => {
           <span>VerbaPulse Interview & Defense Simulator</span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight leading-tight">
-          Adaptive Interview & <span className="bg-gradient-to-r from-blue-400 via-emerald-400 to-indigo-400 bg-clip-text text-transparent">AI Voice Grading Engine</span>
+          Adaptive Interview & <span className="text-blue-400">AI Voice Grading Engine</span>
         </h1>
         <p className="text-sm sm:text-base text-slate-300 max-w-2xl mx-auto leading-relaxed">
           Answer questions verbally or via text, receive instant AI scoring with audio feedback, and track your readiness index.
@@ -84,7 +84,7 @@ export const TestSimulatorPhase: React.FC = () => {
                 key={s.num}
                 className={`flex items-center gap-2.5 p-2 sm:p-3 rounded-xl transition-all duration-300 ${
                   isCurrent
-                    ? 'bg-gradient-to-r from-blue-600 via-blue-500 to-emerald-500 text-white shadow-md font-bold scale-[1.02]'
+                    ? 'bg-blue-600 text-white shadow-md font-bold scale-[1.02]'
                     : isDone
                     ? 'bg-emerald-950/60 text-emerald-300 font-semibold border border-emerald-500/30'
                     : 'bg-slate-950/60 text-slate-500 font-medium'

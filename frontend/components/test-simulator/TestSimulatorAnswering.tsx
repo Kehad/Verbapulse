@@ -130,7 +130,7 @@ export const TestSimulatorAnswering: React.FC<TestSimulatorAnsweringProps> = ({
             onClick={() => setAnswerMode('RECORD')}
             className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs transition-all cursor-pointer ${
               answerMode === 'RECORD'
-                ? 'bg-gradient-to-r from-blue-600 to-emerald-500 text-white font-extrabold shadow-md'
+                ? 'bg-blue-600 text-white font-extrabold shadow-md'
                 : 'text-slate-400 hover:text-white font-bold'
             }`}
           >
@@ -168,7 +168,7 @@ export const TestSimulatorAnswering: React.FC<TestSimulatorAnsweringProps> = ({
               <button
                 type="button"
                 onClick={onStartRecording}
-                className="w-20 h-20 rounded-full bg-gradient-to-tr from-blue-600 to-emerald-500 hover:from-blue-500 hover:to-emerald-400 text-white flex items-center justify-center shadow-xl shadow-blue-500/30 transition-all hover:scale-105 cursor-pointer relative z-10"
+                className="w-20 h-20 rounded-full bg-blue-600 hover:bg-blue-500 text-white flex items-center justify-center shadow-xl shadow-blue-500/30 transition-all hover:scale-105 cursor-pointer relative z-10"
                 title="Click to start recording"
               >
                 <Mic className="w-9 h-9" />
@@ -229,7 +229,7 @@ export const TestSimulatorAnswering: React.FC<TestSimulatorAnsweringProps> = ({
             (answerMode === 'RECORD' && !audioBlob && !transcript.trim()) ||
             (answerMode === 'TEXT' && !textAnswer.trim())
           }
-          className="flex items-center gap-3 px-9 py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-emerald-500 hover:from-blue-500 hover:to-emerald-400 text-white font-extrabold text-sm transition-all shadow-xl shadow-blue-500/20 disabled:opacity-50 cursor-pointer"
+          className="flex items-center gap-3 px-9 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-sm transition-all shadow-xl shadow-blue-500/20 disabled:opacity-50 cursor-pointer"
         >
           {loading ? (
             <>

@@ -25,17 +25,6 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectMode }) => {
     <div className="w-full flex flex-col gap-16 py-6 animate-fadeIn text-slate-100">
       {/* Hero Section */}
       <section className="relative flex flex-col items-center text-center gap-6 max-w-4xl mx-auto pt-6 pb-10">
-        {/* Neon Sapphire & Mint Glow backdrops */}
-        <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-[30rem] h-[30rem] bg-blue-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-24 left-1/4 w-80 h-80 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex items-center gap-3">
-          <img
-            src="/logo.png"
-            alt="VerbaPulse Logo Emblem"
-            className="w-20 h-20 sm:w-24 sm:h-24 object-contain p-2 animate-float"
-          />
-        </div>
 
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold uppercase tracking-wider backdrop-blur-md shadow-xs">
           <Sparkles className="w-4 h-4 text-blue-400 animate-pulse" />
@@ -44,7 +33,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectMode }) => {
 
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-tight text-white">
           Speak With Confidence.{' '}
-          <span className="bg-gradient-to-r from-blue-400 via-emerald-400 to-indigo-400 bg-clip-text text-transparent">
+          <span className="text-blue-400">
             Defend With Precision.
           </span>
         </h1>
@@ -57,7 +46,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectMode }) => {
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-2 w-full sm:w-auto">
           <button
             onClick={() => onSelectMode('LIVE_COPILOT')}
-            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-blue-600 via-blue-500 to-emerald-500 hover:from-blue-500 hover:to-emerald-400 text-white font-extrabold text-sm shadow-xl shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 group cursor-pointer"
+            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-sm shadow-xl shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 group cursor-pointer"
           >
             <Radio className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
             <span>Start Live Voice Copilot</span>
@@ -92,7 +81,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectMode }) => {
 
       {/* Interactive Telemetry HUD Preview Showcase */}
       <section className="relative max-w-5xl mx-auto w-full">
-        <div className="p-1 rounded-3xl bg-gradient-to-r from-blue-500/30 via-emerald-500/20 to-indigo-500/30 shadow-2xl backdrop-blur-xl">
+        <div className="p-1 rounded-3xl bg-slate-900 border border-slate-800 shadow-2xl backdrop-blur-xl">
           <div className="bg-slate-950/90 rounded-[22px] p-6 sm:p-8 border border-slate-800/80 flex flex-col gap-6">
 
             {/* Mock Header */}
@@ -225,7 +214,7 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectMode }) => {
       </section>
 
       {/* Bottom CTA Banner */}
-      <section className="max-w-4xl mx-auto w-full text-center p-8 sm:p-12 rounded-3xl bg-gradient-to-r from-blue-950/80 via-slate-900 to-emerald-950/80 border border-blue-500/30 flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden">
+      <section className="max-w-4xl mx-auto w-full text-center p-8 sm:p-12 rounded-3xl bg-slate-900 border border-slate-800 flex flex-col items-center gap-6 shadow-2xl relative overflow-hidden">
         <div className="flex flex-col gap-2">
           <h2 className="text-2xl sm:text-4xl font-extrabold text-white">Ready to Master Your Verbal Defense?</h2>
           <p className="text-sm text-slate-300 max-w-lg mx-auto">
