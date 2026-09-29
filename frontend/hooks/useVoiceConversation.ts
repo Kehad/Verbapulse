@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { getWsUrl } from '@/lib/config';
 
 export type VoiceSessionStatus =
   | 'disconnected'
@@ -22,9 +23,7 @@ export interface UseVoiceConversationProps {
 }
 
 export function useVoiceConversation({
-  backendWsUrl = process.env.NEXT_PUBLIC_WS_URL
-    ? process.env.NEXT_PUBLIC_WS_URL.replace('/ws/copilot', '/ws/voice-conversation')
-    : 'ws://localhost:8000/ws/voice-conversation',
+  backendWsUrl = getWsUrl('/ws/voice-conversation'),
   vadSilenceThresholdMs = 500
 }: UseVoiceConversationProps = {}) {
   const [status, setStatus] = useState<VoiceSessionStatus>('disconnected');

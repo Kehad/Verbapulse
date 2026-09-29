@@ -7,6 +7,7 @@ import { TestSimulatorPhase } from '@/components/TestSimulatorPhase';
 import { VoiceConversationInterface } from '@/components/VoiceConversationInterface';
 import { Radio, BookOpen, FileText, ExternalLink, Sparkles } from 'lucide-react';
 import logo from "@/public/logo.png";
+import { getBackendUrl } from '@/lib/config';
 
 type AppMode = 'LANDING' | 'VOICE_STUDIO' | 'TEST_SIMULATOR';
 
@@ -14,7 +15,7 @@ export default function Home() {
   const [mode, setMode] = useState<AppMode>('VOICE_STUDIO');
   const [backendHealth, setBackendHealth] = useState<boolean | null>(null);
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000' || 'https://verbalpulse-backend.onrender.com';
+  const backendUrl = getBackendUrl();
 
   // Health check ping to backend
   useEffect(() => {

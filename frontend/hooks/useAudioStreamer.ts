@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { getWsUrl } from '@/lib/config';
 
 export type SignalType = 'GREEN' | 'AMBER' | 'RED';
 
@@ -28,7 +29,7 @@ export interface UseAudioStreamerProps {
 export function useAudioStreamer({
   groundTruth,
   targetQuestion,
-  backendWsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/ws/copilot'
+  backendWsUrl = getWsUrl('/ws/copilot')
 }: UseAudioStreamerProps) {
   const [isStreaming, setIsStreaming] = useState<boolean>(false);
   const [isPaused, setIsPaused] = useState<boolean>(false);

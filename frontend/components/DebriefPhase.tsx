@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { EvaluationEntry } from '@/hooks/useAudioStreamer';
+import { getBackendUrl } from '@/lib/config';
 import {
   ShieldCheck,
   Sparkles,
@@ -34,7 +35,7 @@ export const DebriefPhase: React.FC<DebriefPhaseProps> = ({
   useEffect(() => {
     async function fetchDebrief() {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+        const baseUrl = getBackendUrl();
         const resp = await fetch(`${baseUrl}/api/v1/debrief`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },

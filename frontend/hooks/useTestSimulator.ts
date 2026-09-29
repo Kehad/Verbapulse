@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { QuestionItem, EvaluationResult } from '@/components/test-simulator/types';
+import { getBackendUrl } from '@/lib/config';
 
 export function useTestSimulator() {
   // Step State: 1 = Config, 2 = Question Answering, 3 = Question Grade, 4 = Final Scorecard
@@ -46,7 +47,7 @@ export function useTestSimulator() {
   const questionTimerRef = useRef<NodeJS.Timeout | null>(null);
   const hasAutoEvaluatedRef = useRef<boolean>(false);
 
-  const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  const baseUrl = getBackendUrl();
 
   // Per-Question Countdown Timer Effect
   useEffect(() => {
