@@ -5,7 +5,7 @@
     "description": "\n# VivaGuard AI Backend Broker & Evaluation Engine\n\nVivaGuard provides a real-time AI copilot, speech evaluation engine, and adaptive technical interview defense system.\n\n## Key Capabilities:\n- **AssemblyAI Realtime Speech-to-Text**: Stream 16 kHz audio via WebSockets for real-time transcription.\n- **AssemblyAI Voice Agent (TTS & Speech-to-Speech)**: Convert AI coaching feedback and text into audio responses and stream bi-directional voice agent conversations over WebSockets (`/ws/speech-to-speech`).\n- **Gemini / LLM Evaluation Engine**: Analyze answers against technical rubrics, filler words, and domain depth.\n- **Session Event Broker**: Low-latency WebSocket event distribution across client connections.\n- **Adaptive Difficulty Engine**: Dynamically adjust question difficulty tier (Junior, Mid-Level, Senior) based on candidate performance.\n\n## Interactive API Documentation\n- **Swagger UI**: [/docs](http://localhost:8000/docs)\n- **ReDoc**: [/redoc](http://localhost:8000/redoc)\n- **OpenAPI Schema (JSON)**: [/openapi.json](http://localhost:8000/openapi.json)\n",
     "contact": {
       "name": "VivaGuard Engineering",
-      "url": "https://vivaguard.ai/"
+      "url": "https://vivaguard.onrender.com/"
     },
     "license": {
       "name": "MIT License"
