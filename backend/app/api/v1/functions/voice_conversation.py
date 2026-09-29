@@ -141,29 +141,14 @@ async def voice_conversation_endpoint(websocket: WebSocket) -> None:
             audio_bytes, duration_sec, audio_fmt = await generate_voice_agent_audio(ai_text, sample_rate=sample_rate)
             audio_b64 = base64.b64encode(audio_bytes).decode("utf-8")
 
-            # Stream audio in chunks to client to allow low latency & barge-in
-            chunk_size = 4096 * 4
-            total_chunks = max(1, len(audio_b64) // chunk_size + (1 if len(audio_b64) % chunk_size > 0 else 0))
-
-            for idx in range(total_chunks):
-                if interrupt_event.is_set():
-                    print("[VoiceAI] Synthesis streaming aborted due to user barge-in.")
-                    break
-
-                start_idx = idx * chunk_size
-                chunk_b64 = audio_b64[start_idx : start_idx + chunk_size]
-
-                await websocket.send_json({
-                    "type": "audio_chunk",
-                    "audio_b64": chunk_b64,
-                    "chunk_index": idx,
-                    "total_chunks": total_chunks,
-                    "sample_rate": sample_rate,
-                    "text": ai_text if idx == 0 else ""
-                })
-
-                # Short delay between chunk streams to simulate real-time playback streaming
-                await asyncio.sleep(0.04)
+            await websocket.send_json({
+                "type": "audio_chunk",
+                "audio_b64": audio_b64,
+                "chunk_index": 0,
+                "total_chunks": 1,
+                "sample_rate": sample_rate,
+                "text": ai_text
+            })
 
             if not interrupt_event.is_set():
                 await websocket.send_json({
