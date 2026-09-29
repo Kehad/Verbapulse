@@ -52,6 +52,7 @@ export function useVoiceConversation({
   const activeSourcesRef = useRef<AudioBufferSourceNode[]>([]);
   const nextPlaybackTimeRef = useRef<number>(0);
   const isPlayingAiAudioRef = useRef<boolean>(false);
+  const pendingListeningRef = useRef<boolean>(false);
 
   // Speech recognition & VAD refs
   const recognitionRef = useRef<any>(null);
@@ -78,6 +79,7 @@ export function useVoiceConversation({
       activeSourcesRef.current = [];
       nextPlaybackTimeRef.current = 0;
       isPlayingAiAudioRef.current = false;
+      pendingListeningRef.current = false;
       setAiAudioLevel(0);
     } catch (err) {
       console.warn('Playback stop error:', err);
@@ -177,7 +179,7 @@ export function useVoiceConversation({
         source.buffer = audioBuffer;
 
         const gainNode = audioCtx.createGain();
-        gainNode.gain.value = 1.0;
+        gainNode.gain.value = 1.8;
 
         source.connect(gainNode);
         gainNode.connect(audioCtx.destination);
@@ -191,12 +193,16 @@ export function useVoiceConversation({
         isPlayingAiAudioRef.current = true;
 
         // Visualizer level calculation during AI speech
-        setAiAudioLevel(75);
+        setAiAudioLevel(85);
         source.onended = () => {
           activeSourcesRef.current = activeSourcesRef.current.filter((s) => s !== source);
           if (activeSourcesRef.current.length === 0) {
             isPlayingAiAudioRef.current = false;
             setAiAudioLevel(0);
+            if (pendingListeningRef.current) {
+              pendingListeningRef.current = false;
+              setStatus('listening');
+            }
           }
         };
       } catch (err) {
@@ -316,15 +322,10 @@ export function useVoiceConversation({
         if (!isMutedRef.current) {
           setAudioLevel(normalized);
 
-          // User speech detection for VAD & Barge-In
-          if (normalized > 18) {
+          // User speech detection for VAD (only active during listening state)
+          if (normalized > 18 && statusRef.current === 'listening') {
             lastUserSpeechTimeRef.current = Date.now();
             isUserSpeakingInTurnRef.current = true;
-
-            // Automatic Barge-In if AI is speaking and user talks into mic
-            if (statusRef.current === 'speaking') {
-              triggerInterrupt();
-            }
           }
         } else {
           setAudioLevel(0);
@@ -350,7 +351,8 @@ export function useVoiceConversation({
           if (
             wsRef.current &&
             wsRef.current.readyState === WebSocket.OPEN &&
-            !isMutedRef.current
+            !isMutedRef.current &&
+            statusRef.current === 'listening'
           ) {
             wsRef.current.send(pcmBuffer);
           }
@@ -371,7 +373,8 @@ export function useVoiceConversation({
           if (
             !wsRef.current ||
             wsRef.current.readyState !== WebSocket.OPEN ||
-            isMutedRef.current
+            isMutedRef.current ||
+            statusRef.current !== 'listening'
           ) {
             return;
           }
@@ -401,7 +404,24 @@ export function useVoiceConversation({
 
           if (data.type === 'status_change') {
             const nextStatus: VoiceSessionStatus = data.status;
-            setStatus(nextStatus);
+
+            if (nextStatus === 'listening') {
+              // Ensure synthetic voice output has finished playing loud before enabling recording again
+              const isSpeakingAudio =
+                activeSourcesRef.current.length > 0 ||
+                isPlayingAiAudioRef.current ||
+                (typeof window !== 'undefined' && window.speechSynthesis && window.speechSynthesis.speaking);
+
+              if (isSpeakingAudio) {
+                pendingListeningRef.current = true;
+              } else {
+                pendingListeningRef.current = false;
+                setStatus('listening');
+              }
+            } else {
+              pendingListeningRef.current = false;
+              setStatus(nextStatus);
+            }
 
             if (nextStatus === 'thinking') {
               // Set a safety reset timeout for thinking state (8s max)
@@ -415,15 +435,22 @@ export function useVoiceConversation({
               // Flush current user transcript into turn history
               setUserTranscript((prev) => {
                 if (prev.trim()) {
-                  setTranscriptHistory((hist) => [
-                    ...hist,
-                    {
-                      id: `usr_${Date.now()}`,
-                      role: 'user',
-                      text: prev.trim(),
-                      timestamp: Date.now()
+                  const textToAdd = prev.trim();
+                  setTranscriptHistory((hist) => {
+                    const lastMsg = hist[hist.length - 1];
+                    if (lastMsg && lastMsg.role === 'user' && lastMsg.text === textToAdd) {
+                      return hist;
                     }
-                  ]);
+                    return [
+                      ...hist,
+                      {
+                        id: `usr_${Date.now()}`,
+                        role: 'user',
+                        text: textToAdd,
+                        timestamp: Date.now()
+                      }
+                    ];
+                  });
                 }
                 return '';
               });
@@ -435,9 +462,29 @@ export function useVoiceConversation({
             }
           } else if (data.type === 'transcript_user') {
             if (data.text) {
-              setUserTranscript(data.text);
+              const userText = data.text.trim();
+              setUserTranscript(userText);
               lastUserSpeechTimeRef.current = Date.now();
               isUserSpeakingInTurnRef.current = true;
+
+              if (data.is_final) {
+                setTranscriptHistory((hist) => {
+                  const lastMsg = hist[hist.length - 1];
+                  if (lastMsg && lastMsg.role === 'user' && lastMsg.text === userText) {
+                    return hist;
+                  }
+                  return [
+                    ...hist,
+                    {
+                      id: `usr_${Date.now()}`,
+                      role: 'user',
+                      text: userText,
+                      timestamp: Date.now()
+                    }
+                  ];
+                });
+                setUserTranscript('');
+              }
             }
           } else if (data.type === 'transcript_ai') {
             if (data.text) {
@@ -445,12 +492,19 @@ export function useVoiceConversation({
               setAiTranscript(aiText);
               setLatencyMs(data.latency_ms || 120);
 
-              // Vocal audio speech execution
+              // Vocal audio speech execution (Speak Loud!)
               if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
                 window.speechSynthesis.cancel();
                 const utterance = new SpeechSynthesisUtterance(aiText);
-                utterance.rate = 1.05;
+                utterance.rate = 1.0;
                 utterance.pitch = 1.0;
+                utterance.volume = 1.0;
+                utterance.onend = () => {
+                  if (pendingListeningRef.current && activeSourcesRef.current.length === 0) {
+                    pendingListeningRef.current = false;
+                    setStatus('listening');
+                  }
+                };
                 window.speechSynthesis.speak(utterance);
               }
 

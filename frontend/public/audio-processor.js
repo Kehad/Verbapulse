@@ -2,6 +2,10 @@ class AudioProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.targetSampleRate = 16000;
+    // Buffer size for ~100ms of audio at 16kHz PCM16 (1600 samples = 3200 bytes)
+    this.bufferSize = 1600;
+    this.buffer = new Int16Array(this.bufferSize);
+    this.bufferIndex = 0;
   }
 
   process(inputs, outputs, parameters) {
@@ -19,8 +23,6 @@ class AudioProcessor extends AudioWorkletProcessor {
       return true;
     }
 
-    const pcm16 = new Int16Array(resampledLength);
-
     for (let i = 0; i < resampledLength; i++) {
       const srcIndex = i * sampleRateRatio;
       const index1 = Math.floor(srcIndex);
@@ -33,11 +35,17 @@ class AudioProcessor extends AudioWorkletProcessor {
 
       // Clamp float sample [-1.0, 1.0] to signed 16-bit PCM integer [-32768, 32767]
       const clamped = Math.max(-1, Math.min(1, sample));
-      pcm16[i] = clamped < 0 ? Math.round(clamped * 32768) : Math.round(clamped * 32767);
-    }
+      const pcmVal = clamped < 0 ? Math.round(clamped * 32768) : Math.round(clamped * 32767);
 
-    // Transfer the underlying ArrayBuffer for zero-copy efficiency
-    this.port.postMessage(pcm16.buffer, [pcm16.buffer]);
+      this.buffer[this.bufferIndex++] = pcmVal;
+
+      if (this.bufferIndex >= this.bufferSize) {
+        // Send full 100ms chunk (3200 bytes) over message port
+        const chunk = this.buffer.slice(0, this.bufferSize);
+        this.port.postMessage(chunk.buffer, [chunk.buffer]);
+        this.bufferIndex = 0;
+      }
+    }
 
     return true;
   }

@@ -375,35 +375,54 @@ export function VoiceConversationInterface() {
                 </div>
               )}
 
-            {voice.transcriptHistory.filter(msg => msg.role === 'user').map((msg) => (
-              <div
-                key={msg.id}
-                className="flex gap-3 justify-end"
-              >
-                <div className="max-w-[82%] p-3.5 rounded-2xl text-xs leading-relaxed bg-neutral-900 border border-neutral-800 text-neutral-100 rounded-tr-none">
-                  <div className="flex items-center justify-between gap-4 mb-1 text-[10px] text-neutral-400">
-                    <span className="font-semibold text-neutral-300">You</span>
-                    {msg.latencyMs && (
-                      <span className="font-mono text-cyan-400">
-                        {msg.latencyMs}ms
+            {voice.transcriptHistory.map((msg) =>
+              msg.role === 'user' ? (
+                <div key={msg.id} className="flex gap-3 justify-end">
+                  <div className="max-w-[82%] p-3.5 rounded-2xl text-xs leading-relaxed bg-neutral-900 border border-neutral-800 text-neutral-100 rounded-tr-none shadow-md">
+                    <div className="flex items-center justify-between gap-4 mb-1 text-[10px] text-neutral-400">
+                      <span className="font-semibold text-emerald-400">You (AssemblyAI STT)</span>
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-neutral-800 text-neutral-400 font-mono">
+                        Read-Only
                       </span>
-                    )}
+                    </div>
+                    <p className="select-text">{msg.text}</p>
                   </div>
-                  <p>{msg.text}</p>
+                  <div className="w-7 h-7 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center shrink-0 mt-0.5">
+                    <User className="w-3.5 h-3.5 text-neutral-300" />
+                  </div>
                 </div>
-                <div className="w-7 h-7 rounded-xl bg-neutral-800 border border-neutral-700 flex items-center justify-center shrink-0 mt-0.5">
-                  <User className="w-3.5 h-3.5 text-neutral-300" />
+              ) : (
+                <div key={msg.id} className="flex gap-3 justify-start">
+                  <div className="w-7 h-7 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                  </div>
+                  <div className="max-w-[82%] p-3.5 rounded-2xl text-xs leading-relaxed bg-cyan-950/20 border border-cyan-500/30 text-cyan-100 rounded-tl-none shadow-md">
+                    <div className="flex items-center justify-between gap-4 mb-1 text-[10px] text-cyan-400 font-semibold">
+                      <span>VivaGuard Voice Copilot</span>
+                      {msg.latencyMs && (
+                        <span className="font-mono text-cyan-400 text-[10px]">
+                          {msg.latencyMs}ms
+                        </span>
+                      )}
+                    </div>
+                    <p className="select-text">{msg.text}</p>
+                  </div>
                 </div>
-              </div>
-            ))}
+              )
+            )}
 
             {/* In-Flight Active User Speech */}
             {voice.userTranscript && (
               <div className="flex gap-3 justify-end">
                 <div className="max-w-[82%] p-3.5 rounded-2xl bg-neutral-900/80 border border-emerald-500/40 text-emerald-300 text-xs rounded-tr-none animate-pulse">
-                  <div className="flex items-center gap-2 mb-1 text-[10px] text-emerald-400 font-semibold">
-                    <Mic className="w-3 h-3 text-emerald-400 animate-bounce" />
-                    <span>Spoken Input Captured</span>
+                  <div className="flex items-center justify-between gap-2 mb-1 text-[10px] text-emerald-400 font-semibold">
+                    <div className="flex items-center gap-1.5">
+                      <Mic className="w-3 h-3 text-emerald-400 animate-bounce" />
+                      <span>AssemblyAI Converting Speech...</span>
+                    </div>
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-500/30 text-emerald-400 font-mono">
+                      Read-Only
+                    </span>
                   </div>
                   <p>{voice.userTranscript}</p>
                 </div>
@@ -421,38 +440,59 @@ export function VoiceConversationInterface() {
                 </div>
                 <div className="max-w-[82%] p-3.5 rounded-2xl bg-indigo-950/30 border border-indigo-500/40 text-indigo-200 text-xs rounded-tl-none animate-pulse">
                   <div className="flex items-center gap-2 text-[10px] text-indigo-400 font-semibold">
-                    <span>Thinking for a response...</span>
+                    <span>AI is thinking & generating response...</span>
                   </div>
                 </div>
               </div>
             )}
 
-
+            {/* In-Flight Loud Speaking Indicator */}
+            {voice.status === 'speaking' && (
+              <div className="flex gap-3 justify-start">
+                <div className="w-7 h-7 rounded-xl bg-cyan-500/10 border border-cyan-500/40 flex items-center justify-center shrink-0 mt-0.5">
+                  <Volume2 className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                </div>
+                <div className="max-w-[82%] p-3.5 rounded-2xl bg-cyan-950/30 border border-cyan-500/40 text-cyan-200 text-xs rounded-tl-none animate-pulse">
+                  <div className="flex items-center gap-2 text-[10px] text-cyan-400 font-semibold">
+                    <Volume2 className="w-3.5 h-3.5 text-cyan-400 animate-bounce" />
+                    <span>Voice output speaking loud through speakers...</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Text Input Prompt Box */}
-          <form onSubmit={handleSendText} className="w-full flex items-center gap-2 pt-2 border-t border-neutral-800/80">
-            <input
-              type="text"
-              value={textInput}
-              onChange={(e) => setTextInput(e.target.value)}
-              placeholder={
-                voice.status === 'disconnected'
-                  ? 'Click "Start Voice Conversation" to connect...'
-                  : 'Type message or tap Send to submit voice...'
-              }
-              disabled={voice.status === 'disconnected'}
-              className="flex-1 bg-neutral-900 border border-neutral-800 focus:border-cyan-500 text-white text-xs rounded-xl px-4 py-2.5 outline-none transition-all placeholder:text-neutral-500 disabled:opacity-50"
-            />
-            <button
-              type="submit"
-              disabled={voice.status === 'disconnected' || (voice.status !== 'listening' && !textInput.trim())}
-              className="p-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:bg-neutral-800 text-white transition-all cursor-pointer disabled:cursor-not-allowed shrink-0"
-              title={textInput.trim() ? "Send Text Message" : "Submit Voice Recording"}
-            >
-              <Send className="w-4 h-4" />
-            </button>
-          </form>
+          {/* Voice Turn Controls */}
+          <div className="w-full flex items-center justify-center pt-3 border-t border-neutral-800/80">
+            {voice.status === 'listening' ? (
+              <button
+                onClick={voice.finishVoiceTurn}
+                className="w-full py-3 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold transition-all shadow-lg flex items-center justify-center gap-2 text-sm cursor-pointer"
+              >
+                <Send className="w-4 h-4" />
+                <span>Send Spoken Voice Recording</span>
+              </button>
+            ) : (
+              <div className="w-full py-3 rounded-xl bg-neutral-900 border border-neutral-800 text-neutral-400 font-semibold text-center flex items-center justify-center gap-2 text-sm">
+                {voice.status === 'thinking' ? (
+                  <>
+                    <Sparkles className="w-4 h-4 animate-spin text-indigo-400" />
+                    <span>AI is thinking...</span>
+                  </>
+                ) : voice.status === 'speaking' ? (
+                  <>
+                    <Volume2 className="w-4 h-4 text-cyan-400 animate-pulse" />
+                    <span className="text-cyan-300">Voice output is speaking loud... Please wait before recording again</span>
+                  </>
+                ) : (
+                  <>
+                    <Clock className="w-4 h-4 text-neutral-500" />
+                    <span>Please wait...</span>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
