@@ -56,6 +56,25 @@ export function useAudioStreamer({
     'What specific fallback mechanism exists if primary assumptions fail?'
   ]);
 
+  // Live Examiner Speech Synthesis state
+  const [isExaminerSpeaking, setIsExaminerSpeaking] = useState<boolean>(false);
+  const [activeExaminerQuestion, setActiveExaminerQuestion] = useState<string>('');
+
+  const speakExaminerQuestion = useCallback((questionText: string) => {
+    if (!questionText) return;
+    setActiveExaminerQuestion(questionText);
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(questionText);
+      utterance.rate = 1.0;
+      utterance.pitch = 0.95;
+      utterance.onstart = () => setIsExaminerSpeaking(true);
+      utterance.onend = () => setIsExaminerSpeaking(false);
+      utterance.onerror = () => setIsExaminerSpeaking(false);
+      window.speechSynthesis.speak(utterance);
+    }
+  }, []);
+
   // Web Audio & WebSocket References
   const audioContextRef = useRef<AudioContext | null>(null);
   const mediaStreamRef = useRef<MediaStream | null>(null);
@@ -69,6 +88,10 @@ export function useAudioStreamer({
   sessionTimeRef.current = sessionTime;
   const transcriptRef = useRef('');
   transcriptRef.current = transcript;
+  const isStreamingRef = useRef(false);
+  isStreamingRef.current = isStreaming;
+  const isPausedRef = useRef(false);
+  isPausedRef.current = isPaused;
 
   // Toggle mic audio feedback / monitoring (hearing your own audio)
   const toggleAudioMonitoring = useCallback(() => {
@@ -182,7 +205,7 @@ export function useAudioStreamer({
 
       recognition.onerror = () => {};
       recognition.onend = () => {
-        if (isStreaming && !isPaused && recognitionRef.current) {
+        if (isStreamingRef.current && !isPausedRef.current && recognitionRef.current) {
           try {
             recognitionRef.current.start();
           } catch (_) {}
@@ -267,7 +290,7 @@ export function useAudioStreamer({
       // Handle raw 16kHz PCM ArrayBuffer binary frames from AudioWorklet
       workletNode.port.onmessage = (event) => {
         const pcmBuffer = event.data;
-        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && !isPaused) {
+        if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN && !isPausedRef.current) {
           wsRef.current.send(pcmBuffer);
         }
       };
@@ -392,6 +415,9 @@ export function useAudioStreamer({
     examinerSentiment,
     isDodging,
     aiFollowups,
+    isExaminerSpeaking,
+    activeExaminerQuestion,
+    speakExaminerQuestion,
     startSession,
     stopSession,
     togglePause,

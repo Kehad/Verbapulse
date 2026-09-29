@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 interface LandingPageProps {
-  onSelectMode: (mode: 'LIVE_COPILOT' | 'TEST_SIMULATOR') => void;
+  onSelectMode: (mode: 'VOICE_STUDIO' | 'TEST_SIMULATOR') => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({ onSelectMode }) => {
@@ -26,30 +26,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectMode }) => {
       {/* Hero Section */}
       <section className="relative flex flex-col items-center text-center gap-6 max-w-4xl mx-auto pt-6 pb-10">
 
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold uppercase tracking-wider backdrop-blur-md shadow-xs">
-          <Sparkles className="w-4 h-4 text-blue-400 animate-pulse" />
-          <span>Real-Time Voice Telemetry & AI Defense Assistant</span>
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-semibold uppercase tracking-wider backdrop-blur-md shadow-xs">
+          <Sparkles className="w-4 h-4 text-cyan-400 animate-pulse" />
+          <span>Real-Time Voice AI Agent & Conversational Studio</span>
         </div>
 
         <h1 className="text-4xl sm:text-6xl font-black tracking-tight leading-tight text-white">
-          Speak With Confidence.{' '}
-          <span className="text-blue-400">
-            Defend With Precision.
+          Speak With AI Naturally.{' '}
+          <span className="text-cyan-400">
+            Real-Time Voice Studio.
           </span>
         </h1>
 
         <p className="text-base sm:text-xl text-slate-300 max-w-2xl leading-relaxed font-normal">
-          <strong className="text-white font-bold">VerbaPulse</strong> provides instant, real-time voice telemetry as you speak—guiding your answers during thesis defenses, interviews, and key presentations.
+          <strong className="text-white font-bold">VerbaPulse</strong> provides instant, full-duplex conversational voice AI—talk to an intelligent agent with your mic and listen to real-time responses out loud.
         </p>
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row items-center gap-4 mt-2 w-full sm:w-auto">
           <button
-            onClick={() => onSelectMode('LIVE_COPILOT')}
-            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-500 text-white font-extrabold text-sm shadow-xl shadow-blue-500/25 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 group cursor-pointer"
+            onClick={() => onSelectMode('VOICE_STUDIO')}
+            className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-extrabold text-sm shadow-xl shadow-cyan-500/25 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 group cursor-pointer"
           >
             <Radio className="w-5 h-5 text-white group-hover:scale-110 transition-transform" />
-            <span>Start Live Voice Copilot</span>
+            <span>Launch Voice AI Studio</span>
             <ArrowRight className="w-4 h-4 text-white group-hover:translate-x-1 transition-transform" />
           </button>
 
@@ -224,10 +224,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({ onSelectMode }) => {
 
         <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
           <button
-            onClick={() => onSelectMode('LIVE_COPILOT')}
-            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-blue-500 hover:bg-blue-400 text-white font-extrabold text-sm transition-all cursor-pointer shadow-lg shadow-blue-500/25"
+            onClick={() => onSelectMode('VOICE_STUDIO')}
+            className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-cyan-600 hover:bg-cyan-500 text-white font-extrabold text-sm transition-all cursor-pointer shadow-lg shadow-cyan-500/25"
           >
-            Start Live Copilot
+            Launch Voice Studio
           </button>
           <button
             onClick={() => onSelectMode('TEST_SIMULATOR')}
