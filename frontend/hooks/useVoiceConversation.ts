@@ -491,22 +491,6 @@ export function useVoiceConversation({
               setAiTranscript(aiText);
               setLatencyMs(data.latency_ms || 120);
 
-              // Vocal audio speech execution (Speak Loud!)
-              if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-                const utterance = new SpeechSynthesisUtterance(aiText);
-                utterance.rate = 1.0;
-                utterance.pitch = 1.0;
-                utterance.volume = 1.0;
-                utterance.onend = () => {
-                  if (pendingListeningRef.current && activeSourcesRef.current.length === 0) {
-                    pendingListeningRef.current = false;
-                    setStatus('listening');
-                  }
-                };
-                window.speechSynthesis.speak(utterance);
-              }
-
               setTranscriptHistory((hist) => [
                 ...hist,
                 {
@@ -520,6 +504,9 @@ export function useVoiceConversation({
             }
           } else if (data.type === 'audio_chunk') {
             if (data.audio_b64) {
+              if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+              }
               playAudioChunk(data.audio_b64);
             }
           } else if (data.type === 'interrupted_ack') {
