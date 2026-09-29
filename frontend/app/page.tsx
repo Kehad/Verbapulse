@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { LandingPage } from '@/components/LandingPage';
 import { TestSimulatorPhase } from '@/components/TestSimulatorPhase';
 import { VoiceConversationInterface } from '@/components/VoiceConversationInterface';
-import { Shield, Radio, BookOpen, FileText, ExternalLink, Sparkles } from 'lucide-react';
+import { Radio, BookOpen, FileText, ExternalLink, Sparkles } from 'lucide-react';
+import logo from "@/public/logo.png";
 
 type AppMode = 'LANDING' | 'VOICE_STUDIO' | 'TEST_SIMULATOR';
 
@@ -12,7 +14,7 @@ export default function Home() {
   const [mode, setMode] = useState<AppMode>('VOICE_STUDIO');
   const [backendHealth, setBackendHealth] = useState<boolean | null>(null);
 
-  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000';
+  const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000' || 'https://verbalpulse-backend.onrender.com';
 
   // Health check ping to backend
   useEffect(() => {
@@ -40,7 +42,7 @@ export default function Home() {
             onClick={() => setMode('LANDING')}
             className="flex items-center gap-3 group text-left cursor-pointer"
           >
-            <Shield className="w-7 h-7 text-white shrink-0" />
+            <Image src={logo} alt="logo" width={50} height={50}/>
             <div className="flex flex-col">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-lg tracking-tight text-white">
